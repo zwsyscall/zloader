@@ -1,2 +1,5 @@
 /target
 /exempt
+/src/generated/consts.rs
+/src/generated/download.rs
+/rc/generated/exec.rs
