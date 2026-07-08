@@ -32,7 +32,7 @@ fn main() {
     fs::write(
         &dest_path,
         format!(
-            "#[used]\nstatic BUILD_UUID: &str = \"{}\";\n#[used]\nstatic BUILD_WATERMARK: &str = \"{}@{}-{}\";",
+            "#[used]\nstatic BUILD_UUID: &str = \"{}\";\n#[used]\nstatic BUILD_WATERMARK: &str = \"{}@{}-{}\";\n#[used]\nstatic REPO_PATH: &str = \"https://github.com/zwsyscall/zloader\";",
             build_id,
             username,
             hostname,
