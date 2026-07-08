@@ -18,7 +18,7 @@ base32 = "0.5.1"
 chacha20poly1305 = "0.10.1"
 rand = "0.10.1"
 reqwest = { version = "0.13.4", features = ["blocking"] }
-load-library-rs = { path = "../load_library_rs" }
+load-library-rs = { git = "https://github.com/zwsyscall/load_library_rs.git" }
 windows = { version = "0.62.2", features = [
     "Win32_Security",
     "Win32_Storage",
