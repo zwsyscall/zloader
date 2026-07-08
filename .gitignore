@@ -2,4 +2,4 @@
 /exempt
 /src/generated/consts.rs
 /src/generated/download.rs
-/rc/generated/exec.rs
+/src/generated/exec.rs
