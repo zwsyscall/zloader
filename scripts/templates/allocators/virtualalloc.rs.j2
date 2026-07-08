@@ -1,0 +1,3 @@
+dprintln!("Calling VirtualAlloc");
+    #[allow(unused_mut)]
+    if let Ok(mut buff) = NtVirtunalAlloc::allocate(data.len(), AllocationFlags::ReadWrite) {

